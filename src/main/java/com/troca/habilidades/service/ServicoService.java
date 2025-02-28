@@ -14,6 +14,13 @@ public class ServicoService {
     private ServicoRepository servicoRepository;
 
     public Servico criarServico(Servico servico) {
+        if (servico.getTitulo() == null || servico.getTitulo().isBlank()) {
+            throw new IllegalArgumentException("O título do serviço não pode estar vazio");
+        }
+        if (servico.getDescricao() == null || servico.getDescricao().isBlank()) {
+            throw new IllegalArgumentException("A descrição do serviço não pode estar vazia");
+        }
+
         return servicoRepository.save(servico);
     }
 
@@ -22,6 +29,10 @@ public class ServicoService {
     }
 
     public List<Servico> listarServicosPorUsuario(Long usuarioId) {
-        return servicoRepository.findByUsuarioId(usuarioId);
+        List<Servico> servicos = servicoRepository.findByUsuarioId(usuarioId);
+        if (servicos.isEmpty()) {
+            throw new IllegalArgumentException("Nenhum serviço encontrado para o usuário com ID: " + usuarioId);
+        }
+        return servicos;
     }
 }
